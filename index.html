@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<script type="application/json" id="cowork-artifact-meta">
+{
+  "name": "Kalos 4-Week Transformation",
+  "schemaVersion": 1,
+  "description": "10-lesson guided transformation program for Kalos 4-week members. Each lesson is directly linkable via #lesson-N for EverFit DM drip sequence."
+}
+</script>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kalos | 4-Week Transformation Program</title>
+<style>
+:root {
+  color-scheme: light;
+  --bg: #F4F6FF;
+  --surface: #FFFFFF;
+  --surface-2: #EDF0FF;
+  --border: #DDE3FF;
+  --border-dark: #C5CFFF;
+  --primary: #436EFA;
+  --primary-dark: #2b52d6;
+  --primary-light: #D1DBFF;
+  --primary-dim: rgba(67,110,250,0.07);
+  --primary-dim2: rgba(67,110,250,0.12);
+  --dark: #101010;
+  --text: #0d1125;
+  --text-sec: #4a5280;
+  --text-muted: #8890b8;
+  --radius: 5px;
+  --radius-lg: 10px;
+  --shadow: 0 1px 3px rgba(67,110,250,0.06), 0 4px 16px rgba(67,110,250,0.06);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{
+  font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Helvetica Neue',Arial,sans-serif;
+  background:var(--bg);color:var(--text);min-height:100vh;
+  line-height:1.6;-webkit-font-smoothing:antialiased;
+}
+.hdr{
+  position:sticky;top:0;z-index:100;
+  background:rgba(255,255,255,0.96);
+  backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+  border-bottom:1px solid var(--border);
+  height:62px;display:flex;align-items:center;
+  justify-content:space-between;padding:0 32px;
+}
+.logo{font-size:15px;font-weight:800;letter-spacing:0.14em;text-transform:uppercase;color:var(--dark);text-decoration:none;}
+.logo-dot{color:var(--primary);}
+.hdr-pill{
+  font-size:11px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;
+  color:var(--primary);background:var(--primary-dim2);
+  border:1px solid var(--primary-light);border-radius:100px;padding:4px 14px;
+}
+.back-btn{
+  display:inline-flex;align-items:center;gap:6px;
+  font-size:12px;font-weight:600;color:var(--text-sec);
+  text-decoration:none;cursor:pointer;border:none;background:none;
+  padding:7px 12px;border-radius:var(--radius);
+  transition:color .15s,background .15s;letter-spacing:.03em;
+}
+.back-btn::before{content:'←';font-size:14px;}
+.back-btn:hover{color:var(--primary);background:var(--primary-dim);}
+.ix-wrap{max-width:780px;margin:0 auto;}
+.ix-hero{padding:80px 32px 56px;}
+.ix-kicker{
+  display:inline-flex;align-items:center;gap:10px;
+  font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--primary);margin-bottom:20px;
+}
+.kl{width:28px;height:2px;background:var(--primary);border-radius:2px;}
+.ix-title{
+  font-size:clamp(38px,6vw,62px);font-weight:800;
+  letter-spacing:-0.035em;line-height:1.04;color:var(--dark);margin-bottom:20px;
+}
+.ix-sub{font-size:19px;color:var(--text-sec);line-height:1.65;max-width:560px;}
+.ix-rule{height:1px;background:var(--border);margin:0 32px 48px;}
+.grid{
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(330px,1fr));
+  gap:10px;padding:0 32px 80px;
+}
+.card{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--radius-lg);padding:26px 24px 22px;
+  text-decoration:none;display:flex;flex-direction:column;gap:10px;
+  transition:border-color .2s,box-shadow .2s,transform .15s;
+  box-shadow:var(--shadow);
+}
+.card:hover{border-color:var(--primary);box-shadow:0 6px 28px rgba(67,110,250,.15);transform:translateY(-2px);}
+.card-top{display:flex;align-items:center;justify-content:space-between;}
+.c-day{
+  font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--primary);background:var(--primary-dim2);
+  border:1px solid var(--primary-light);border-radius:100px;padding:3px 11px;
+}
+.c-num{font-size:10px;font-weight:600;letter-spacing:.06em;color:var(--text-muted);}
+.c-title{font-size:17px;font-weight:700;letter-spacing:-.02em;color:var(--dark);line-height:1.3;}
+.c-teaser{font-size:13.5px;color:var(--text-sec);line-height:1.55;}
+.c-cta{font-size:12px;font-weight:700;color:var(--primary);letter-spacing:.04em;margin-top:2px;}
+.lx-wrap{max-width:700px;margin:0 auto;padding:56px 32px 100px;}
+.lx-meta{display:flex;align-items:center;gap:12px;margin-bottom:30px;flex-wrap:wrap;}
+.lx-day{
+  font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--primary);background:var(--primary-dim2);
+  border:1px solid var(--primary-light);border-radius:100px;padding:4px 13px;
+}
+.lx-ctr{font-size:11px;color:var(--text-muted);letter-spacing:.04em;}
+.dots{display:flex;gap:5px;margin-left:auto;}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--border-dark);transition:background .2s;}
+.dot.done{background:var(--primary-light);}
+.dot.active{background:var(--primary);}
+.lx-title{
+  font-size:clamp(32px,5vw,50px);font-weight:800;
+  letter-spacing:-.035em;line-height:1.08;color:var(--dark);margin-bottom:30px;
+}
+.lx-hook{
+  font-size:20px;font-weight:400;font-style:italic;
+  color:var(--text-sec);line-height:1.65;
+  border-left:3px solid var(--primary);padding-left:22px;
+  margin-bottom:52px;
+}
+.sec{margin-bottom:44px;}
+.sec-hd{
+  font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--primary);margin-bottom:16px;
+  padding-bottom:12px;border-bottom:1px solid var(--border);
+}
+.sec p{font-size:16.5px;line-height:1.82;color:var(--text-sec);margin-bottom:18px;}
+.sec p:last-child{margin-bottom:0;}
+.sec p strong{color:var(--dark);font-weight:600;}
+.sec em{font-style:italic;}
+.sec ul{list-style:none;padding:0;margin:14px 0;}
+.sec ul li{
+  font-size:15.5px;line-height:1.7;color:var(--text-sec);
+  padding:10px 0 10px 26px;position:relative;
+  border-bottom:1px solid var(--border);
+}
+.sec ul li:first-child{border-top:1px solid var(--border);}
+.sec ul li::before{content:'→';position:absolute;left:0;color:var(--primary);font-weight:700;}
+.sec ul li strong{color:var(--dark);font-weight:600;}
+.callout{
+  background:var(--primary-dim);border:1px solid var(--primary-light);
+  border-left:3px solid var(--primary);
+  border-radius:var(--radius-lg);padding:20px 24px;
+  margin:20px 0;font-size:16px;font-weight:500;
+  color:var(--dark);line-height:1.7;
+}
+.rule{border:none;border-top:1px solid var(--border);margin:48px 0;}
+.action{
+  background:var(--dark);border-radius:var(--radius-lg);
+  padding:30px 32px;margin-top:56px;
+}
+.action-lbl{
+  font-size:10px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;
+  color:var(--primary-light);margin-bottom:14px;
+  display:flex;align-items:center;gap:8px;
+}
+.action-lbl::before{content:'';display:inline-block;width:20px;height:2px;background:var(--primary-light);border-radius:1px;}
+.action-txt{font-size:16.5px;color:#dde3ff;line-height:1.75;}
+.lx-nav{
+  display:flex;align-items:center;justify-content:space-between;
+  padding-top:40px;margin-top:56px;border-top:1px solid var(--border);gap:8px;
+}
+.nb{
+  display:inline-flex;align-items:center;gap:6px;
+  font-size:13px;font-weight:600;color:var(--text-sec);text-decoration:none;
+  padding:10px 20px;border-radius:var(--radius);
+  background:var(--surface);border:1px solid var(--border);
+  transition:all .15s;cursor:pointer;
+  box-shadow:var(--shadow);
+}
+.nb:hover{border-color:var(--primary);color:var(--primary);background:var(--primary-dim);}
+.nb.pr{background:var(--primary);color:#fff;border-color:var(--primary);}
+.nb.pr:hover{background:var(--primary-dark);border-color:var(--primary-dark);color:#fff;}
+.nb.dis{opacity:.3;pointer-events:none;}
+.nb.mid{font-size:11px;letter-spacing:.06em;text-transform:uppercase;}
+@media(max-width:600px){
+  .hdr{padding:0 16px;}
+  .ix-hero{padding:48px 16px 40px;}
+  .ix-rule{margin:0 16px 36px;}
+  .grid{padding:0 16px 60px;gap:8px;}
+  .lx-wrap{padding:36px 16px 60px;}
+  .lx-hook{font-size:18px;}
+  .action{padding:22px 20px;}
+}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script>
+const L=[
+  {
+    n:1,day:1,
+    title:"The Foundation",
+    teaser:"Why most programs fail before they start, and the framework that makes the next four weeks actually work.",
+    hook:"Before the first workout, there is one thing that matters more than your training split, your macros, or your motivation level. It is this.",
+    secs:[
+      {h:"The Minimum Effective Dose",b:`<p>Here is something most coaches will not say out loud: trying to change everything at once is one of the most reliable ways to change nothing. The principle behind this program is the <strong>minimum effective dose</strong>: make only the changes required to produce the results you want, and layer them deliberately from there.</p><p>Your current state is the sum total of every decision you have made up to this point. That is not a criticism. It is the most encouraging truth available to you, because it means different inputs produce different outputs. You have more control over this than you think. The version of you that walks out of this program exists already, waiting for a different set of decisions.</p><p>That process begins by identifying your <em>big rocks</em>: the few changes that will create the most significant impact on your physiology and habits. Focus on these first. Get them right, and everything else falls into place around them. Chase the small details before the big rocks are in place, and you will almost certainly stall.</p>`},
+      {h:"Your Week 1 Big Rocks",b:`<p>This week, there are five priorities. Not twenty. Five. Master these before adding anything else.</p><ul><li><strong>Get familiar with the app.</strong> Know where your workouts live, how to log sets and reps, and where to track your food. This is your daily operating system for the next four weeks. Learn it now so it becomes invisible later.</li><li><strong>Start tracking your food, especially protein.</strong> Do not stress about hitting perfect numbers yet. Just log what you eat and drink. Awareness is step one. You cannot manage what you are not measuring.</li><li><strong>Understand your workouts.</strong> Read through the exercises and prescribed sets before each session. Know why each exercise is there. This week is not about going all out. It is about building understanding that will carry every session forward.</li><li><strong>Establish a consistent routine.</strong> Three sessions this week is a win. Sporadic bursts of intensity do not build the foundation that consistent, manageable effort does. What you can sustain is what will transform you.</li><li><strong>Start morning mindfulness.</strong> Each morning, take one minute to reflect on how you slept, how you feel, and what your energy is like. This daily check-in builds the self-awareness that makes every other habit more effective over time.</li></ul>`},
+      {h:"The ABCs of Success",b:`<p>Five principles that define who finishes this program and who does not. These are not motivational slogans. They are operating instructions.</p><ul><li><strong>A: Attitude.</strong> Approach this journey with openness and a willingness to learn. When things get hard, that is information, not a verdict. A constructive attitude transforms every obstacle into an opportunity to improve.</li><li><strong>B: Belief.</strong> Trust the process. More importantly, trust yourself. The people who get transformative results are not always the most naturally gifted. They are the ones who decided, on day one, that this is not optional.</li><li><strong>C: Commitment.</strong> When Cortez landed in the New World, he burned his ships. No retreat. That level of commitment is what this program requires. Not perfection. Commitment. Leave no back door open.</li><li><strong>D: Discipline.</strong> Motivation is a spark. Discipline is the fuel. It bridges goals and accomplishment and it performs whether or not you feel like it today.</li><li><strong>E: Execution.</strong> What you measure, you can manage. Log your workouts. Track your food. Note your habits. The data tells you where to adjust. Without it, you are guessing.</li></ul><div class="callout">Progress, not perfection. Celebrate every step forward, no matter how small. The goal is to be better than yesterday, consistently, over time. That is the formula. Constancy over time equals monumental success.</div>`},
+      {h:"Nutrition: Know the Landscape",b:`<p>Everyone is on a diet. The question is whether yours is conscious and deliberate, or driven by habits and cravings without much thought behind it. This week, we are not overhauling your nutrition. We are building awareness.</p><p>Understand the hierarchy that governs everything in nutrition, ordered by impact:</p><ul><li><strong>Calories:</strong> The foundation. Every diet that works does so by managing energy balance. Non-negotiable physics.</li><li><strong>Macros:</strong> How your calories are divided among protein, fats, and carbohydrates. Protein comes first, always.</li><li><strong>Timing:</strong> When you eat affects insulin response, energy, and recovery. Less critical than the first two, but it compounds meaningfully over weeks.</li><li><strong>Quality:</strong> The source of your calories. Whole foods provide micronutrients that processed foods do not, and this difference grows month over month.</li><li><strong>Supplements:</strong> Fill nutritional gaps. Never a substitute for a solid food foundation.</li></ul><p>Every popular diet from keto to vegan to intermittent fasting works through the same mechanism: creating a caloric deficit. The best diet is the one you can adhere to consistently and sustain over time. We will build yours deliberately over these four weeks.</p><p>This week, one priority: start tracking protein. Just awareness. No perfect targets yet. That number will matter more as we go.</p>`}
+    ],
+    action:"Write your top 3 to 5 goals tonight before bed. Present tense: not 'I want to' but 'I am.' Example: 'I am lean, strong, and energized at 165 pounds.' Write them again first thing in the morning. Run this practice every morning and evening for the duration of this program."
+  },
+  {
+    n:2,day:4,
+    title:"Train Like a Pro",
+    teaser:"The principles that separate people who transform from people who maintain, plus the concept that changes how you approach every set.",
+    hook:"You could spend months in the gym and still miss the fundamentals that determine 80% of your results. Here is the complete training framework.",
+    secs:[
+      {h:"The 7 Principles of Hypertrophy",b:`<p>These are the non-negotiables. Every effective training session applies all seven. Miss one and you are leaving results behind.</p><ul><li><strong>1. Posture:</strong> Neutral ribcage over neutral pelvis, core braced throughout every movement. This is the base everything else sits on. Losing posture mid-set means losing tension and transferring load to the wrong structures.</li><li><strong>2. SSI: Setup, Stabilize, Initiate.</strong> Before every exercise, position your body to load the target muscle, lock in what should not move, and begin the movement with the intended muscle leading. Lesson 3 covers SSI in full detail.</li><li><strong>3. Counterforce:</strong> Press, grip, or drive into a stable surface in the direction opposite to your movement. This creates a rigid base that allows the target muscle to generate maximum force without leaking tension into compensatory muscles. Counterforce applies throughout the entire set, not just at the setup phase.</li><li><strong>4. Work the Strength Curve:</strong> Train the muscle at both its most lengthened (stretched) position and its most shortened (contracted) position. Before any exercise, ask: can the target muscle reach a real stretch here? If not, consider a different variation. At peak contraction, squeeze hard. Do not just pass through it.</li><li><strong>5. Constant Tension:</strong> Never give the muscle a rest mid-set. No bouncing at the bottom, no locking out at the top, no letting the weight settle. When tension drops, stimulus drops with it.</li><li><strong>6. Tempo:</strong> Execute each rep with the same controlled speed from the first to the last. Consistent tempo maintains time under tension (TUT), a primary driver of hypertrophy. A default tempo of 3010, three seconds lowering and one second lifting, removes momentum and forces the muscle to do all the work.</li><li><strong>7. RPE:</strong> Rate of Perceived Exertion. How hard you are actually working is one of the most important training variables. Most working sets should land at RPE 7 to 9, finishing with 1 to 3 reps still available. Full details in the next section.</li></ul>`},
+      {h:"Effective Reps: The Only Ones That Count",b:`<p>The concept of effective reps, developed by strength coach Christian Thibaudeau, reframes how to think about every set. Not all reps in a set create the same stimulus. In a set of 12, the first 8 or 9 are largely a ramp-up phase, activating muscle fibers for the reps that actually matter: the final 3 to 4, performed at 80 to 100% of your perceived effort toward failure. These are the effective reps. They are where adaptation actually happens.</p><p>This is why two people can do identical exercises for identical rep counts and get completely different results. One is training. The other is moving weight through a range of motion.</p><ul><li><strong>High volume (lower load, higher reps):</strong> Greater time under tension, higher cumulative fatigue, more cortisol output. Best suited for beginners and isolation exercises where form is easier to maintain with lighter loads.</li><li><strong>High load (heavier weight, fewer reps):</strong> More joint and tendon stress, higher technical demand, more time-efficient. Requires solid movement patterns before increasing load significantly.</li><li><strong>The right balance</strong> depends on your skill level, available time, joint health, and current total stress load. The program uses both strategically across the four weeks.</li></ul><div class="callout">A set of 6 reps finished at RPE 9 produces more hypertrophic stimulus than a set of 15 finished at RPE 5. Volume is not the primary variable. Proximity to failure is.</div>`},
+      {h:"RPE in Practice",b:`<p>The Rate of Perceived Exertion scale runs 1 to 10. A 1 is no effort at all. A 10 is absolute maximum with nothing left. Three ranges matter most in practice:</p><ul><li><strong>Warm-up sets: RPE 4 to 7.</strong> Get blood flowing, rehearse the movement pattern, prepare the nervous system. Do not leave anything meaningful here.</li><li><strong>Working sets: RPE 8 or above.</strong> You are pushing close to your limit while maintaining form and safety. Conversation is not possible. You are operating at roughly 80 to 90% of maximum capacity.</li><li><strong>Last rep of your last set:</strong> Aim for RPE 10. One rep left in reserve, if any. This is how you find the edge without crossing it.</li></ul><p>On high-stress days or after poor sleep, scale your working RPE back to 6 or 7. Your nervous system does not distinguish between work stress and training stress. Total physiological load is what determines recovery capacity. Backing off the intensity when life is pushing hard is not weakness. It is intelligent load management.</p><p>RPE is also a progress indicator. When the same load at the same reps starts feeling like an RPE 6 instead of an 8, your fitness has improved. That is the signal to add weight or reduce rest time.</p>`}
+    ],
+    action:"In your next session, estimate your RPE after each working set and write it next to your reps and weight in the app. By the end of the week, you will know clearly whether you are under-reaching, over-reaching, or training in the productive zone."
+  },
+  {
+    n:3,day:7,
+    title:"Elevate Your Execution",
+    teaser:"Week two is where understanding replaces guesswork: the SSI framework in full, your exact protein target, and the daily habits that accelerate everything.",
+    hook:"Week one was about showing up. Week two is about understanding why. Here is how to make every session, every meal, and every day work harder for your results.",
+    secs:[
+      {h:"Elevating Your Journey",b:`<p>You have built the foundation. This week, we peel back the first layer of training principles and nutrition to amplify your results. The shift is from going through the motions to understanding every motion.</p><p>Two nutritional targets become non-negotiable this week:</p><ul><li><strong>Hit your daily protein target.</strong> Protein is essential for muscle repair and growth, and it is the most satiating macronutrient. Hitting your target makes everything else measurably easier. Your exact target is calculated below.</li><li><strong>Hit your daily caloric intake.</strong> Do not stress exact carb and fat ratios yet. Focus on a balanced intake that supports your energy levels through training and recovery.</li></ul><p>This is also the week to start three core daily supplements: a multivitamin, omega-3 fish oil, and vitamin D3 with K2. These address foundational deficiencies that affect recovery, inflammation, and hormonal function. A full supplement breakdown comes later in the program.</p><p>Begin building a sleep routine this week: same bedtime and wake time every day, a room that is cool, dark, and quiet, and a wind-down period without screens in the 30 minutes before bed. Consistent sleep timing is one of the highest-leverage habits in this program and it costs nothing to start tonight.</p>`},
+      {h:"Mastering SSI: Setup, Stabilize, Initiate",b:`<p>SSI is your pre-rep checklist. Run through all three steps before every exercise and especially before the first rep of each working set. Each step has a specific and essential job.</p><ul><li><strong>Setup:</strong> Position your body to load the target muscle. This means adjusting seat height, pad position, grip width, foot placement, and any other variable that determines whether your anatomy is aligned to load the intended muscle group. Everyone has different torso-to-leg ratios, rib cage shapes, and limb proportions. Do not try to fit your body to the exercise. Make the exercise fit your body. A poor setup cannot be fixed once the set is underway.</li><li><strong>Stabilize:</strong> Lock in everything that is not supposed to move. This is active bracing, not passive positioning. Engage the core, create a neutral ribcage-to-pelvis alignment, and apply counterforce: press, grip, or drive into a stable surface in the direction opposite your movement. This gives the target muscle something to push against. Without that opposing tension, force leaks through the joints and your stronger muscles take over, which is the mechanism behind most compensation patterns.</li><li><strong>Initiate:</strong> Begin the movement from the intended muscle. The muscle that initiates the movement and experiences the greatest stretch will perform the majority of the work. Start each rep with a conscious engagement of the target muscle first, before anything else moves.</li></ul><div class="callout">Exercise is for everyone, but not every exercise is for every body. If a movement consistently places you in a position where you cannot load the target muscle without compensation, find a variation that fits your structure. The goal is stimulus, not adherence to a specific movement pattern.</div>`},
+      {h:"Your Protein Target and How to Hit It",b:`<p>Protein is the structural and functional material of the human body. It builds and repairs muscle tissue, drives immune function, regulates hormones, and participates in nearly every enzymatic reaction. It also has the highest thermic effect of any macronutrient: your body burns 20 to 30% of protein calories in the process of digesting and metabolizing them, compared to 5 to 10% for carbohydrates and 0 to 3% for fat. That is a built-in metabolic advantage operating 24 hours a day.</p><p><strong>Calculating your target:</strong> The most precise method is to take your lean tissue mass and your total body weight and find the midpoint between them. That midpoint, in grams, is your daily protein target. If you weigh 180 lbs and carry 140 lbs of lean mass, the midpoint is 160, so your target is 160g per day. A simpler approximation is 0.9g per pound of total body weight.</p><p><strong>The practical daily strategy:</strong></p><ul><li><strong>3 meals, each with a protein serving the size of your fist.</strong> Chicken, beef, fish, eggs, or turkey at breakfast, lunch, and dinner. This covers the majority of your target through whole food sources.</li><li><strong>2 protein shakes.</strong> A high-quality whey isolate post-workout and one other time in the day closes the gap for most people.</li><li><strong>If you are still short:</strong> Add a serving of Greek yogurt before bed. It is high in casein protein, which digests slowly and provides a sustained amino acid supply through the night.</li></ul><p>Protein quality matters. The Biological Value ranking tells you how efficiently your body uses each source:</p><ul><li><strong>Whey Protein Isolate: BV 159.</strong> Gold standard for supplementation. Fast-absorbing, complete amino profile.</li><li><strong>Eggs: BV 100.</strong> The benchmark everything else is measured against. Highly bioavailable and nutrient-dense.</li><li><strong>Chicken and Turkey: BV 79.</strong> Lean, versatile, and the backbone of most effective nutrition plans.</li><li><strong>Beef: BV 69.</strong> Higher in fat, but rich in zinc, B12, heme iron, and natural creatine.</li><li><strong>Dairy: BV 60.</strong> Complete amino profile. Choose grass-fed sources where possible.</li></ul><p>When choosing a whey supplement, select isolate with a minimal ingredient list. Avoid amino spiking, where glycine or taurine are added to inflate the protein count on the label without contributing amino acids that actually drive muscle synthesis.</p>`},
+      {h:"Five Daily Habits: Stay Mindful",b:`<p>These five habits are not things to obsessively track or stress over. They are areas to stay mindful of throughout your day. Simple awareness of where you stand on each one is enough to begin improving them.</p><ul><li><strong>Sleep: 7 to 9 hours.</strong> Note how you feel upon waking. Refreshed or fatigued is the simplest quality indicator. Consistent bedtime and wake time reinforces your circadian rhythm and improves sleep architecture over time.</li><li><strong>Sun exposure: 10 or more minutes daily.</strong> Even on cloudy days, natural light regulates circadian rhythm, drives vitamin D synthesis, and improves mood. A morning walk is the most practical way to get it.</li><li><strong>Water: half your body weight in ounces minimum.</strong> Start each morning with 20 to 30oz of water with a squeeze of lemon and a pinch of sea salt before coffee. Drink the majority of your water between meals rather than during them to support digestion and absorption.</li><li><strong>Stress: rate it 1 to 10 daily.</strong> Just notice it. When stress is consistently running high (7 or above), scale back training RPE and prioritize sleep. The body does not distinguish between sources of physiological load.</li><li><strong>Steps: aim for 8,000 per day.</strong> Three 10-minute walks after your main meals is the most practical strategy. This aids digestion, lowers post-meal blood sugar, and reduces cortisol. More detail on the full walking protocol in Lesson 5.</li></ul>`}
+    ],
+    action:"Calculate your protein target today using the midpoint method: add your lean mass in lbs to your total body weight in lbs, then divide by 2. That number in grams is your daily target. Then map out what a day of hitting it actually looks like: breakfast protein, lunch protein, dinner protein, two shakes. Does that get you there?"
+  },
+  {
+    n:4,day:10,
+    title:"The Hidden 20%",
+    teaser:"Perfect training and perfect nutrition still leave you 20% short if you ignore what happens between sessions.",
+    hook:"You could do everything right in the gym and at the dinner table, and still be leaving a fifth of your results behind. Here is what most programs never address.",
+    secs:[
+      {h:"Sleep: Your Recovery Engine",b:`<p>Sleep is not passive recovery. It is an active physiological process where almost everything that makes your program work actually happens. Muscle protein synthesis peaks during sleep. Growth hormone is primarily released in slow-wave sleep. Immune function, hormonal regulation, and neural adaptation all depend on sleep quality and duration. Without enough of it, a meaningful portion of your training work is simply lost.</p><p>High chronic stress creates a hormonal cascade called the pregnenolone steal: the body prioritizes cortisol production over other hormone synthesis, including testosterone and estrogen. The result is disrupted recovery, increased fat storage, and impaired mood regulation. Poor sleep is one of the primary drivers of this cascade, and it silently undoes a significant portion of what you build in the gym.</p><ul><li><strong>Target: 7 to 9 hours, with a consistent wake time daily.</strong></li><li>Keep your room at around 64 degrees. Core body temperature drop is a primary sleep trigger.</li><li>No screens for 30 minutes before bed. Blue light actively suppresses melatonin production.</li><li>Consider planning sleep in 90-minute increments. You wake more alert at the end of a sleep cycle than in the middle of one.</li><li>If alcohol is part of your routine, consider eliminating or significantly reducing it this week. Even moderate alcohol meaningfully degrades sleep architecture and slows physiological recovery.</li></ul>`},
+      {h:"Hydration: The Morning Protocol",b:`<p><strong>Daily target:</strong> half your body weight in ounces, minimum. At 180 pounds, that is 90oz. More on training days and in warmer conditions.</p><p><strong>The morning protocol:</strong> 20 to 30oz of water immediately on waking, before coffee or food. Add a pinch of sea salt and a squeeze of lemon. This rehydrates after 7 to 8 hours without fluids, provides natural electrolytes for absorption, and kick-starts digestive function. It takes about 30 seconds and most people skip it entirely.</p><p>Drink between meals rather than with meals. Large volumes of fluid during eating dilute digestive enzymes and impair absorption of the nutrients you are consuming. Distribute your water intake across the day rather than front-loading or back-loading it.</p>`},
+      {h:"Sunlight, Stress, and Alcohol",b:`<p><strong>Sunlight: 10 or more minutes daily,</strong> ideally before 10am. Morning light synchronizes your circadian rhythm, drives natural vitamin D synthesis, and calibrates the cortisol-to-melatonin timing that governs your entire sleep-wake cycle. This is not a wellness suggestion. It is a direct dial on the hormonal environment that determines how well you recover between sessions.</p><p><strong>Stress: track it 1 to 10 daily.</strong> On days where you score 7 or above, reduce training RPE to 6 or 7. Your nervous system does not separate work stress from training stress. Total physiological load is the variable that determines recovery, not just what happens in the gym. Pushing hard when your systemic stress is already high produces diminishing returns and accelerates fatigue accumulation across the week.</p><p><strong>Alcohol and recovery:</strong> This one is worth being direct about. Even moderate alcohol consumption, one to two drinks, meaningfully degrades sleep architecture by suppressing REM and slow-wave sleep, the two phases where growth hormone release and muscle protein synthesis are highest. It also elevates cortisol and dehydrates you, compounding the recovery deficit the next day. Eliminating alcohol for the four weeks of this program is one of the highest-leverage choices available. If that is not realistic, be aware of the tradeoff and weigh it consciously rather than pretending it is not there.</p>`}
+    ],
+    action:"For the next 7 days, log three pillars every day: sleep hours, stress rating, and water intake. At the end of the week, note which one was most consistently off. That is your highest-leverage recovery gap to close in week 3."
+  },
+  {
+    n:5,day:13,
+    title:"The Magic of Movement",
+    teaser:"You train for about 3 hours a week. Here is what happens in the other 165, and why it quietly shapes a large portion of your results.",
+    hook:"You train three times a week for about an hour a session. That is less than 2% of your week. Here is what is happening in the other 98%, and how to make it work for you instead of against you.",
+    secs:[
+      {h:"NEAT: The Other Half of Your Metabolism",b:`<p>Non-Exercise Activity Thermogenesis, or NEAT, is the energy you burn through all movement that is not structured exercise: walking, standing, taking the stairs, pacing during a phone call, fidgeting at your desk. For many people, NEAT accounts for as many or more calories burned per day than their actual training sessions. And unlike structured exercise, it does not require recovery time.</p><p>This is one of the primary reasons two people with identical workouts and identical nutrition can produce significantly different body composition outcomes over a four-week program. The difference often lives in those other 165 hours.</p><p>The highest-leverage NEAT tool available is also the simplest: walking. It is low-stress and non-catabolic, meaning it burns energy without breaking down muscle tissue the way high-intensity cardio can. It reduces cortisol, improves circulation, flushes sore muscles, and accelerates recovery between sessions. Walking is one of the most underrated tools for fat loss, longevity, and overall health, and it is available to everyone regardless of fitness level.</p>`},
+      {h:"The 8,000 Step Protocol",b:`<p><strong>The target: 8,000 steps per day.</strong> If this feels out of reach based on your current baseline, take the incremental approach: find your average daily steps from the past two weeks using your phone or watch, then increase that number by 10% each week until you hit 8,000.</p><p>Three strategies for hitting it, in order of metabolic impact:</p><ul><li><strong>Three 10-minute walks after your main meals.</strong> This is the highest-leverage approach. Post-meal walks within 20 minutes of eating meaningfully reduce blood sugar spikes, improve nutrient transport and digestion, lower post-meal cortisol, and contribute roughly 3,000 steps to your daily total. Three meals, three walks: 30 minutes, distributed throughout the day.</li><li><strong>Two 15-minute sessions, morning and evening.</strong> Works well for the step target and gives you a structured movement bookend on your day. You lose some of the post-meal metabolic benefits, but gain routine consistency, which matters more over four weeks.</li><li><strong>The hourly reset, for desk workers.</strong> Set a timer for every 60 minutes. When it fires, walk for 3 to 5 minutes. This keeps blood flowing, maintains energy and mental clarity, and adds significant steps across a full workday without disrupting your workflow.</li></ul><p>Aim for 30 minutes of active walking per day in whatever format fits your schedule. Use a step counter, your phone, or a watch to track your daily total. What gets measured gets managed.</p>`},
+      {h:"Walking and Body Composition",b:`<p>During low-intensity aerobic activity, the body preferentially uses fat for fuel, particularly in a fasted or lower-carbohydrate state. Walking sits squarely in this zone. Unlike high-intensity cardio, it achieves fat oxidation without the cortisol spike that can interfere with recovery or trigger muscle catabolism. You burn fat without paying the recovery cost of intense cardio.</p><p>The stress management component is equally significant. Regular daily walking, particularly after meals or split throughout the day, lowers systemic cortisol, improves mental clarity, and provides a meaningful recovery buffer between training sessions. In the context of a transformation program, managing total stress load across all sources is one of the most underrated performance variables. Walking addresses it directly without adding to your physiological burden.</p><div class="callout">A 10-minute walk after each main meal adds roughly 3,000 steps, meaningfully reduces blood sugar response, lowers post-meal cortisol, and aids digestion. The total time investment is 30 minutes. The return on those 30 minutes is disproportionately high relative to anything else you could do with that time.</div><p>Members who consistently hit their step targets throughout this program show measurably better body composition outcomes than those who do not, all other variables being equal. It is one of the most consistent differentiators in the data. It is not glamorous. That is largely why it works.</p>`}
+    ],
+    action:"Check your average daily steps from the past week. If you are below 6,000, add one 15-minute walk per day starting today. If you are already above 6,000, add post-meal walks after lunch and dinner this week. Try the post-meal walk routine for 3 consecutive days and pay attention to what it does to your energy levels and digestion."
+  },
+  {
+    n:6,day:16,
+    title:"The Nutrition System",
+    teaser:"Every popular diet works through the same mechanism. Here is the actual framework underneath all of them.",
+    hook:"Keto, vegan, intermittent fasting: they are all the same diet in different clothes. Once you understand the system underneath, you stop following rules and start making real decisions.",
+    secs:[
+      {h:"The Hierarchy: In Order of Impact",b:`<p>Nutrition is not one variable. It is a stack of decisions, ordered by how much each one actually matters. Get the lower levels right before optimizing the upper ones:</p><ul><li><strong>1. Calories.</strong> The foundation. Energy balance is non-negotiable physics. Every diet that works does so by creating a caloric deficit, through restriction, satiety, or timing.</li><li><strong>2. Macros.</strong> How those calories are divided. Protein to a firm target first. Essential fats second. Carbohydrates fill the remainder based on activity level and goals.</li><li><strong>3. Timing.</strong> When you eat affects insulin response, energy, and recovery. Less critical than the first two, but it compounds meaningfully over weeks.</li><li><strong>4. Quality.</strong> The source of your calories determines micronutrient density, inflammatory load, and hormonal impact. Whole foods versus processed foods is not a minor distinction. It affects every level above it.</li><li><strong>5. Supplements.</strong> Fill nutritional gaps. Always built on top of the food foundation. Never a substitute for it.</li></ul>`},
+      {h:"Peri-Workout Nutrition and Timing",b:`<p>When and what you eat around your training sessions has an outsized effect on performance, recovery, and body composition outcomes. Three windows matter most:</p><ul><li><strong>Pre-workout: 45 to 60 minutes before training.</strong> Eat a meal containing both protein and a moderate serving of carbohydrates. The protein provides amino acids available for muscle protein synthesis during and after training. The carbohydrates replenish glycogen and fuel the session. A practical example: chicken and rice, ground beef with sweet potato, or Greek yogurt with oats. Keep fat low here since it slows gastric emptying and can cause discomfort during training.</li><li><strong>Immediately post-workout: protein shake with carbs.</strong> The window immediately after training is the most insulin-sensitive point of your day. Muscle tissue is primed to absorb glucose for glycogen replenishment and amino acids for repair. A whey isolate shake with a fast-digesting carbohydrate source, dextrose, white rice, or a banana, capitalizes on this window before it closes. Fat slows absorption here, so keep it minimal.</li><li><strong>60 to 90 minutes after training: full meal.</strong> Follow the post-workout shake with a complete meal roughly an hour to an hour and a half later. This is the primary recovery meal: protein, quality carbohydrates, and vegetables. Your post-workout shake was the immediate signal. This meal is the sustained fuel for the hours of recovery that follow.</li></ul><div class="callout">At each meal outside of the peri-workout window, choose either a fat-dominant or carbohydrate-dominant approach. Combining high fat and high carbohydrate at the same meal is the most efficient path to a caloric surplus and the least efficient path to body recomposition.</div><ul><li><strong>Avoid carbs at breakfast</strong> unless it is a pre-workout meal. In the morning, fat oxidation is naturally elevated and insulin sensitivity is lower. Protein and healthy fats at breakfast support sustained energy without the insulin spike that interrupts fat metabolism for hours.</li></ul>`},
+      {h:"The Inflammation Problem Most People Never Fix",b:`<p>Industrial seed oils including soybean, sunflower, safflower, corn, canola, cottonseed, and generic vegetable oil are extremely high in omega-6 polyunsaturated fatty acids. A healthy omega-6 to omega-3 ratio is approximately 4:1. The typical Western diet runs 20:1 or higher. This chronic imbalance drives systemic inflammation that directly slows recovery, disrupts hormone synthesis, impairs fat metabolism, and makes every body composition goal measurably harder.</p><div class="callout">These oils are in almost every processed food and restaurant meal. They oxidize under heat, producing harmful compounds. Eliminating them may reduce your inflammatory load more than most supplements combined. Almost no one is talking about it.</div><p><strong>Replace with:</strong> Avocado oil for high-heat cooking. Ghee or grass-fed butter for sauteing and baking. Extra virgin olive oil for cold applications. These fats are stable, nutrient-dense, and anti-inflammatory by comparison.</p>`}
+    ],
+    action:"This week: audit every cooking oil in your kitchen. Remove anything labeled soybean, canola, sunflower, corn, safflower, or vegetable oil. Replace with avocado oil or ghee. This single change will have an outsized impact on recovery and inflammation over the back half of this program."
+  },
+  {
+    n:7,day:19,
+    title:"When Motivation Disappears",
+    teaser:"Discipline is what finishes things. Motivation is just what starts them, and it is probably already fading.",
+    hook:"Motivation brought you here. Discipline is what is going to carry you through the second half of this program, and every commitment you make after it.",
+    secs:[
+      {h:"What Actually Predicts Who Finishes",b:`<p>Psychologist Angela Duckworth spent years studying success across elite domains: military special forces training, professional chess, national spelling competitions, academic performance. She measured IQ, talent, wealth, socioeconomic status, and dozens of other variables. The strongest predictor of who achieved their goals, by a significant margin, was <strong>grit</strong>: passion and perseverance for long-term goals.</p><p>Grit is not genetic. It is practiced. The people who get transformative results from this program are not usually the most naturally gifted or the most disciplined by personality. They are the ones who decided the commitment was non-negotiable, especially in weeks 3 and 4, when the novelty has worn off and showing up requires an actual choice.</p><div class="callout">Motivation is based on feelings. Discipline is based on commitment. One fluctuates with your mood, sleep quality, and what happened at work. The other does not care about any of that.</div>`},
+      {h:"Progress Is Non-Linear, and That Is the Signal",b:`<p>Some weeks the scale does not move. Some sessions feel flat without obvious reason. Some days you log your food perfectly and still feel like nothing is happening. This is not a sign the program is not working. It is the program working.</p><p>Metabolic adaptation, neural calibration, hormonal recalibration: these happen beneath the surface before they become visible. The compound effect is accumulating whether you can see it or not. This is exactly the phase where most people make changes driven by impatience. Those changes typically disrupt the process far more than they accelerate it.</p><p>When you feel the pull to add cardio, cut more calories, or try something different, write the impulse down and give the current approach two more consistent weeks before evaluating anything. Evidence-based adjustment is good. Impatience-driven change is the primary enemy of long-term progress.</p>`},
+      {h:"The Goal Writing Practice",b:`<p>This is one of the highest-leverage habits in this program. Most people skip it because it looks too simple to matter. It matters more than most training protocols.</p><p>Every morning and every evening: write your top 3 to 5 goals in a notebook. Not type them, <em>write</em> them by hand. Present tense. As if they are already true. "I am lean and strong at 165 pounds." "I show up every day and do the work." "I have energy and clarity from morning to night." The specificity and present tense both matter. You are training your subconscious to treat these as current reality, not distant aspiration.</p><p>People who write their goals consistently are dramatically more likely to achieve them. Done at both morning and evening, that is roughly 700 repetitions per year. That is a fundamentally different level of internal alignment with your goals than thinking about them occasionally. It sounds simple because it is. That is not a limitation. It is the point.</p>`}
+    ],
+    action:"Start tonight. Write your top 5 goals in a notebook before bed, present tense. Set a phone alarm for tomorrow morning to do it again. Run this practice for 7 consecutive days without skipping, then notice what shifts in your consistency and your internal narrative."
+  },
+  {
+    n:8,day:22,
+    title:"Build Your Stack",
+    teaser:"You do not need 20 supplements. You need the right ones, timed correctly.",
+    hook:"The supplement industry is built on confusion. Here is exactly what is worth taking, what it actually does, and how to time it correctly. No fluff, no marketing.",
+    secs:[
+      {h:"The Foundation Four",b:`<p>These four are not optional upgrades. They address foundational deficiencies that exist for most people even with a clean whole-food diet:</p><ul><li><strong>Multivitamin: take split AM/PM with food.</strong> Covers micronutrient gaps that even careful eaters miss, particularly B vitamins, zinc, selenium, and iodine. Split dosing improves absorption of water-soluble vitamins and reduces what is wasted through excretion.</li><li><strong>Omega-3 Fish Oil: 2 to 3g EPA and DHA daily.</strong> The direct counter to the omega-6 problem covered in Lesson 6. Reduces systemic inflammation, supports cardiovascular and cognitive health, and improves insulin sensitivity. Most people are severely deficient. This has the broadest documented benefit of any supplement across the most variables.</li><li><strong>Vitamin D3 with K2: take together with a fat-containing meal.</strong> D3 enhances calcium absorption and is required for testosterone, estrogen, and immune function. K2 directs calcium to bones and away from arterial walls. Without K2, supplemental D3 can deposit calcium in the wrong tissues. Most people working indoors year-round are deficient. Take at dinner for best absorption.</li><li><strong>Magnesium Glycinate or Taurate: take at bedtime.</strong> Involved in over 300 enzymatic processes. In practice: measurably better sleep quality, reduced muscle cramping, lower resting anxiety, and faster nervous system recovery between sessions. The smooth muscle relaxation from magnesium at bedtime significantly improves both sleep onset and depth.</li></ul>`},
+      {h:"Creatine: The Most Researched, Most Underused",b:`<p>Creatine monohydrate is the most extensively studied supplement in the history of sports science, and still the most underutilized by people outside competitive athletics. The benefits extend well beyond the obvious:</p><ul><li><strong>Strength and power output.</strong> Creatine replenishes phosphocreatine, the immediate energy system for explosive, high-intensity effort. More available creatine means more effective reps before fatigue limits performance in any given set.</li><li><strong>Muscle volume and fullness.</strong> Creatine draws water into muscle cells, producing a denser, fuller appearance within 2 to 3 weeks of consistent use.</li><li><strong>Cognitive function.</strong> Well-documented but rarely discussed: creatine supports brain energy metabolism. Studies show measurable improvements in working memory and processing speed, particularly under sleep deprivation or high cognitive load.</li></ul><p><strong>Protocol:</strong> 3 to 5g of micronized monohydrate daily. No loading phase required. Consistency matters far more than precise timing. Take it with your largest meal or peri-workout.</p>`},
+      {h:"What Is Worth Considering, and What to Skip",b:`<p><strong>Optional tier:</strong> Ashwagandha KSM-66 (an adaptogen, particularly valuable if your daily stress scores are consistently 7 or above), curcumin with black pepper for absorption (anti-inflammatory, supports joint health and cognition), and a high-quality probiotic (gut barrier function, immune support, and improved nutrient absorption).</p><p><strong>Skip most commercial fat burners.</strong> The mechanisms that actually work, caffeine for thermogenesis and L-carnitine for fat transport during fasted low-intensity cardio, are available cheaply and directly without the marketing premium. If a label makes extraordinary claims, that is information about the product.</p><p><strong>On pre-workout:</strong> Caffeine is the ingredient that matters. L-Citrulline for blood flow, L-Theanine to smooth the stimulant edge, and beta-alanine as a lactic acid buffer are legitimate supporting compounds. High-stimulant blends can work, but caffeine consumed within 6 hours of bed measurably degrades sleep architecture, which undermines every other variable in this program.</p>`}
+    ],
+    action:"If you are not already taking a multivitamin, omega-3 fish oil, vitamin D3 with K2, and magnesium: start this week with all four. Within 2 to 3 weeks you will notice measurable differences in energy, sleep depth, and recovery between sessions."
+  },
+  {
+    n:9,day:25,
+    title:"Full Execution Mode",
+    teaser:"Week 4 is where it compounds. You built the foundation. Now push.",
+    hook:"Everything you have built over three weeks is about to pay compound interest. Week 4 is where the transformation accelerates, if you push it instead of coast.",
+    secs:[
+      {h:"Why Weeks 3 and 4 Are Different",b:`<p>The first week of any new program carries a significant learning curve: new movement patterns, unfamiliar training intensity, building the tracking habit from scratch. Week two is about locking it in. By week three, something meaningful has shifted: your technique is sharper, your habits are beginning to automate, and your body has adapted to the baseline stimulus and is ready to be pushed harder.</p><p>This is the moment most people ease off. The novelty is gone, the initial excitement has faded, and there is a pull toward maintenance-mode effort. That is the wrong response. <strong>Weeks 3 and 4 are where the real training begins.</strong> The nervous system is calibrated, the movement patterns are grooved, and the physiological response to additional effort this week is disproportionately high relative to what it was in week one.</p>`},
+      {h:"The Full Execution Checklist",b:`<p>This week, execute at 100% across all four pillars simultaneously, without exception:</p><ul><li><strong>Nutrition:</strong> Every meal tracked. Protein target hit every single day. No estimation. No logging it later. The data is only useful if it is accurate.</li><li><strong>Training:</strong> Every working set at RPE 7 to 9. SSI executed on every exercise. Weights logged and progressed where the current load has started feeling manageable. If last week felt manageable, this week should feel harder.</li><li><strong>Lifestyle:</strong> All four pillars logged daily without exception: sleep, steps, hydration, stress. Not three out of four.</li><li><strong>Supplements:</strong> Foundation four taken consistently. Creatine daily. Zero skipped days this week.</li></ul><div class="callout">Perfection is not the standard. Full effort is. The gap between 80% and 100% execution is where the results that actually change your body composition live, and that gap is smaller than most people think.</div>`},
+      {h:"What the DEXA Will Actually Show",b:`<p>The scale is a poor measure of body composition change. Bodyweight fluctuates 2 to 5 pounds daily based on hydration status, glycogen levels, food volume, and hormonal variation. It tells you very little about whether the program is producing the changes that matter.</p><p>The DEXA tells a different story. It measures lean mass, fat mass, and regional distribution with clinical precision. Members who follow this program closely almost consistently show meaningful body composition shifts, often a simultaneous increase in lean mass and decrease in fat mass, even when the scale moved very little or not at all. That is recomposition, and it is exactly what the program is designed to produce.</p><p>When we review your results together after your scan, the numbers will tell us precisely what changed and what to optimize in the next phase. The data frequently surprises people in a positive direction.</p>`}
+    ],
+    action:"For the next 7 days: 100% execution on every metric. Track everything, hit your protein, push your working sets, log your habits. Not because it is a last chance, but to find out what you are capable of when there is genuinely no room for excuses. The answer usually surprises people."
+  },
+  {
+    n:10,day:28,
+    title:"The Long Game",
+    teaser:"Four weeks is a proof of concept. A year is a transformation. Here is what is actually possible.",
+    hook:"You started something four weeks ago that most people never start. You followed through on something most people do not finish. Now the real question: what do you do with it?",
+    secs:[
+      {h:"What You Built in 4 Weeks",b:`<p>Four weeks is not enough time to reach the destination. It is enough time to build everything required to get there:</p><ul><li><strong>A working nutrition system.</strong> You know your protein targets, your macro priorities, your food quality standards. You have seen what consistent tracking reveals about your actual habits versus your assumed ones.</li><li><strong>Real training technique.</strong> SSI, the 7 principles, effective reps, RPE: these skills compound. They do not go away. Every session from here forward is built on the foundation you laid in this program.</li><li><strong>Lifestyle architecture.</strong> Sleep hygiene, daily steps, morning hydration, stress awareness. The invisible levers most programs never touch, and that are often the difference between people who plateau and people who keep progressing year after year.</li><li><strong>Mental capacity.</strong> Showing up when you did not feel like it. Writing goals when it seemed unnecessary. Pushing the last two reps when stopping was easier. This is the hardest thing to build, and you built it over 28 days.</li></ul>`},
+      {h:"What Happens at 12 Months",b:`<p>The compound effect in body composition does not follow a linear curve. The most significant changes in most members' journeys happen in months 3 through 12, not weeks 1 through 4. Here is the mechanism:</p><p>Structural muscle adaptation takes time to fully express at a tissue level. Resting metabolic rate increases measurably as lean mass accumulates. Movement patterns that required conscious attention become automatic, freeing mental capacity for higher training intensity. Dietary habits that needed constant management become default choices. And the identity shift, from someone doing a program to someone who trains and eats well, becomes load-bearing rather than effortful.</p><p>Members who commit to 12 months see results that are categorically different from 4-week outcomes. Not more of the same. Different in kind. A different body. A different relationship with food and with physical effort. And a different understanding of what is possible for them personally.</p>`},
+      {h:"The Invitation",b:`<p>After we review your scan results together, I want to have a conversation about what comes next. Not a pitch: an honest look at where you are, what the data shows, and what continued coaching would specifically look like for you.</p><p>The members who get the most out of Kalos are the ones who give themselves enough time to see what is actually possible. Four weeks is the proof of concept. The next 12 months is where the real change happens.</p><div class="callout">You showed up. You did the work. Four weeks ago you were not certain you could. Now you know you can. The only question left is how far you want to take it.</div><p>I will reach out to schedule your consultation after your scan. I am genuinely looking forward to reviewing the results with you and building what comes next.</p>`}
+    ],
+    action:"Finish strong. Complete every remaining session with the same intention you brought to day one. Then book your consultation: let us review the data together and design what the next chapter looks like for you specifically."
+  }
+];
+
+const app=document.getElementById('app');
+
+function ix(){
+  window.scrollTo(0,0);
+  const cards=L.map(l=>`
+    <a class="card" href="#lesson-${l.n}">
+      <div class="card-top">
+        <span class="c-day">Day ${l.day}</span>
+        <span class="c-num">Lesson ${String(l.n).padStart(2,'0')} of 10</span>
+      </div>
+      <div class="c-title">${l.title}</div>
+      <div class="c-teaser">${l.teaser}</div>
+      <div class="c-cta">Read lesson →</div>
+    </a>`).join('');
+  app.innerHTML=`
+    <header class="hdr">
+      <span class="logo">KALOS<span class="logo-dot">.</span></span>
+      <span class="hdr-pill">4-Week Program</span>
+    </header>
+    <div class="ix-wrap">
+      <div class="ix-hero">
+        <div class="ix-kicker"><span class="kl"></span>Kalos Coaching</div>
+        <h1 class="ix-title">Your Guided Transformation</h1>
+        <p class="ix-sub">10 lessons delivered over 4 weeks, covering the training principles, nutrition framework, and mindset tools that drive real, measurable results.</p>
+      </div>
+      <div class="ix-rule"></div>
+      <div class="grid">${cards}</div>
+    </div>`;
+}
+
+function lesson(n){
+  window.scrollTo(0,0);
+  const l=L[n-1];
+  if(!l){location.hash='';return;}
+  const dots=L.map((_,i)=>{
+    const c=i+1<n?'done':i+1===n?'active':'';
+    return `<span class="dot ${c}"></span>`;
+  }).join('');
+  const secs=l.secs.map(s=>`
+    <div class="sec">
+      <div class="sec-hd">${s.h}</div>
+      ${s.b}
+    </div>
+    <hr class="rule">`).join('');
+  const prev=n>1?`<a class="nb" href="#lesson-${n-1}">← Lesson ${n-1}</a>`:`<span class="nb dis">← Previous</span>`;
+  const next=n<10?`<a class="nb pr" href="#lesson-${n+1}">Lesson ${n+1} →</a>`:`<a class="nb" href="#">← All Lessons</a>`;
+  app.innerHTML=`
+    <header class="hdr">
+      <a class="back-btn" href="#"> All Lessons</a>
+      <span class="logo">KALOS<span class="logo-dot">.</span></span>
+      <span class="hdr-pill">Lesson ${n} of 10</span>
+    </header>
+    <div class="lx-wrap">
+      <div class="lx-meta">
+        <span class="lx-day">Day ${l.day}</span>
+        <span class="lx-ctr">Lesson ${n} of 10</span>
+        <div class="dots">${dots}</div>
+      </div>
+      <h1 class="lx-title">${l.title}</h1>
+      <p class="lx-hook">${l.hook}</p>
+      ${secs}
+      <div class="action">
+        <div class="action-lbl">Your Action This Week</div>
+        <div class="action-txt">${l.action}</div>
+      </div>
+      <div class="lx-nav">
+        ${prev}
+        <a class="nb mid" href="#">All Lessons</a>
+        ${next}
+      </div>
+    </div>`;
+}
+
+function route(){
+  const m=location.hash.match(/^#lesson-(\d+)$/);
+  if(m){const n=parseInt(m[1]);if(n>=1&&n<=10){lesson(n);return;}}
+  ix();
+}
+window.addEventListener('hashchange',route);
+route();
+</script>
+</body>
+</html>
