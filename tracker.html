@@ -151,6 +151,13 @@ body{
       <span id="member-count"></span>
     </div>
     <div id="member-list"></div>
+    <div style="margin-top:16px;display:flex;gap:8px;flex-wrap:wrap;">
+      <button class="btn btn-ghost" onclick="exportMembers()">Export Members</button>
+      <label class="btn btn-ghost" style="cursor:pointer;">
+        Import Members
+        <input type="file" accept=".json" onchange="importMembers(event)" style="display:none;" />
+      </label>
+    </div>
   </div>
 </div>
 
@@ -391,6 +398,44 @@ function render() {
         </div>`;
     }).join('');
   }
+}
+
+function exportMembers() {
+  const members = loadMembers();
+  if (members.length === 0) { alert('No members to export.'); return; }
+  const blob = new Blob([JSON.stringify(members, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'kalos-drip-members-' + today() + '.json';
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+function importMembers(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    try {
+      const imported = JSON.parse(e.target.result);
+      if (!Array.isArray(imported)) throw new Error('Invalid format');
+      const existing = loadMembers();
+      const existingIds = new Set(existing.map(m => m.id));
+      const merged = [...existing];
+      let added = 0;
+      imported.forEach(m => {
+        if (!existingIds.has(m.id)) { merged.push(m); added++; }
+      });
+      saveMembers(merged);
+      render();
+      alert(added + ' member(s) imported successfully.');
+    } catch(e) {
+      alert('Could not read file. Make sure it is a valid Kalos export.');
+    }
+    event.target.value = '';
+  };
+  reader.readAsText(file);
 }
 
 // Set today's date as default
