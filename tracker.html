@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kalos | 4-Week Drip Tracker</title>
+<style>
+:root {
+  --bg: #F4F6FF;
+  --surface: #FFFFFF;
+  --border: #DDE3FF;
+  --border-dark: #C5CFFF;
+  --primary: #436EFA;
+  --primary-dark: #2b52d6;
+  --primary-light: #D1DBFF;
+  --primary-dim: rgba(67,110,250,0.07);
+  --primary-dim2: rgba(67,110,250,0.12);
+  --dark: #101010;
+  --text: #0d1125;
+  --text-sec: #4a5280;
+  --text-muted: #8890b8;
+  --success: #16a34a;
+  --success-bg: #f0fdf4;
+  --success-border: #bbf7d0;
+  --warn: #d97706;
+  --warn-bg: #fffbeb;
+  --warn-border: #fde68a;
+  --radius: 5px;
+  --radius-lg: 10px;
+  --shadow: 0 1px 3px rgba(67,110,250,0.06), 0 4px 16px rgba(67,110,250,0.06);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{
+  font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Helvetica Neue',Arial,sans-serif;
+  background:var(--bg);color:var(--text);min-height:100vh;
+  line-height:1.6;-webkit-font-smoothing:antialiased;
+}
+.hdr{
+  position:sticky;top:0;z-index:100;
+  background:rgba(255,255,255,0.96);
+  backdrop-filter:blur(16px);
+  border-bottom:1px solid var(--border);
+  height:62px;display:flex;align-items:center;
+  justify-content:space-between;padding:0 32px;
+}
+.logo{font-size:15px;font-weight:800;letter-spacing:0.14em;text-transform:uppercase;color:var(--dark);}
+.logo-dot{color:var(--primary);}
+.hdr-pill{font-size:11px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--primary);background:var(--primary-dim2);border:1px solid var(--primary-light);border-radius:100px;padding:4px 14px;}
+.wrap{max-width:860px;margin:0 auto;padding:48px 32px 100px;}
+.page-title{font-size:36px;font-weight:800;letter-spacing:-0.03em;color:var(--dark);margin-bottom:6px;}
+.page-sub{font-size:15px;color:var(--text-sec);margin-bottom:40px;}
+.section{margin-bottom:40px;}
+.section-hd{font-size:11px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--primary);margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
+.section-hd span{font-size:11px;font-weight:600;color:var(--text-muted);text-transform:none;letter-spacing:0;}
+
+/* Add member form */
+.add-form{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:24px;box-shadow:var(--shadow);display:flex;gap:12px;align-items:flex-end;flex-wrap:wrap;}
+.field{display:flex;flex-direction:column;gap:6px;flex:1;min-width:180px;}
+.field label{font-size:11px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-sec);}
+.field input{height:40px;border:1px solid var(--border-dark);border-radius:var(--radius);padding:0 12px;font-size:14px;color:var(--text);background:var(--surface);outline:none;transition:border-color .15s;}
+.field input:focus{border-color:var(--primary);}
+.btn{height:40px;padding:0 20px;border-radius:var(--radius);font-size:13px;font-weight:700;cursor:pointer;border:none;transition:all .15s;white-space:nowrap;}
+.btn-primary{background:var(--primary);color:#fff;}
+.btn-primary:hover{background:var(--primary-dark);}
+.btn-ghost{background:transparent;color:var(--text-sec);border:1px solid var(--border-dark);}
+.btn-ghost:hover{border-color:var(--primary);color:var(--primary);}
+
+/* Queue cards */
+.queue-empty{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:32px;text-align:center;color:var(--text-muted);font-size:14px;}
+.queue-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:24px;margin-bottom:10px;box-shadow:var(--shadow);}
+.queue-card.urgent{border-left:3px solid var(--primary);}
+.queue-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:8px;}
+.queue-member{font-size:17px;font-weight:700;color:var(--dark);}
+.queue-meta{display:flex;align-items:center;gap:8px;}
+.badge{font-size:10px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;padding:3px 10px;border-radius:100px;}
+.badge-lesson{background:var(--primary-dim2);color:var(--primary);border:1px solid var(--primary-light);}
+.badge-day{background:#f1f5f9;color:var(--text-sec);border:1px solid var(--border-dark);}
+.badge-overdue{background:#fef2f2;color:#dc2626;border:1px solid #fecaca;}
+.queue-title{font-size:13px;font-weight:600;color:var(--text-sec);margin-bottom:10px;}
+.queue-msg{font-size:14px;color:var(--text-sec);line-height:1.7;background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);padding:14px 16px;margin-bottom:14px;white-space:pre-wrap;word-break:break-word;}
+.queue-actions{display:flex;gap:8px;flex-wrap:wrap;}
+.btn-copy{background:var(--primary-dim2);color:var(--primary);border:1px solid var(--primary-light);font-size:12px;height:34px;padding:0 16px;}
+.btn-copy:hover{background:var(--primary);color:#fff;border-color:var(--primary);}
+.btn-copy.copied{background:var(--success-bg);color:var(--success);border-color:var(--success-border);}
+.btn-sent{background:var(--success-bg);color:var(--success);border:1px solid var(--success-border);font-size:12px;height:34px;padding:0 16px;}
+.btn-sent:hover{background:var(--success);color:#fff;}
+
+/* Member list */
+.member-row{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:18px 20px;margin-bottom:8px;display:flex;align-items:center;gap:16px;box-shadow:var(--shadow);}
+.member-name{font-size:15px;font-weight:700;color:var(--dark);flex:1;}
+.member-start{font-size:12px;color:var(--text-muted);}
+.progress-bar{flex:2;height:6px;background:var(--border);border-radius:3px;overflow:hidden;}
+.progress-fill{height:100%;background:var(--primary);border-radius:3px;transition:width .3s;}
+.progress-label{font-size:11px;font-weight:600;color:var(--text-sec);min-width:48px;text-align:right;}
+.btn-remove{background:none;border:none;cursor:pointer;color:var(--text-muted);font-size:18px;line-height:1;padding:4px;border-radius:var(--radius);transition:color .15s;}
+.btn-remove:hover{color:#dc2626;}
+
+/* Today header */
+.today-hd{display:flex;align-items:center;gap:10px;margin-bottom:20px;}
+.today-date{font-size:13px;font-weight:600;color:var(--text-muted);}
+.today-count{font-size:12px;font-weight:700;background:var(--primary);color:#fff;border-radius:100px;padding:2px 10px;}
+.today-count.zero{background:var(--border-dark);color:var(--text-muted);}
+
+@media(max-width:600px){
+  .hdr{padding:0 16px;}
+  .wrap{padding:32px 16px 60px;}
+  .add-form{flex-direction:column;}
+  .member-row{flex-wrap:wrap;}
+}
+</style>
+</head>
+<body>
+<header class="hdr">
+  <span class="logo">KALOS<span class="logo-dot">.</span></span>
+  <span class="hdr-pill">Drip Tracker</span>
+</header>
+
+<div class="wrap">
+  <div class="page-title">4-Week Drip Tracker</div>
+  <div class="page-sub">Add members when their program starts. Check here each morning to see who gets a message today.</div>
+
+  <!-- Add Member -->
+  <div class="section">
+    <div class="section-hd">Add Member</div>
+    <div class="add-form">
+      <div class="field">
+        <label>Member Name</label>
+        <input type="text" id="inp-name" placeholder="First Last" />
+      </div>
+      <div class="field">
+        <label>Program Start Date (Day 1)</label>
+        <input type="date" id="inp-date" />
+      </div>
+      <button class="btn btn-primary" onclick="addMember()">Add to Tracker</button>
+    </div>
+  </div>
+
+  <!-- Today's Queue -->
+  <div class="section">
+    <div class="section-hd">
+      Today's Queue
+      <span id="today-label" class="today-date"></span>
+    </div>
+    <div id="queue"></div>
+  </div>
+
+  <!-- All Members -->
+  <div class="section">
+    <div class="section-hd">
+      Active Members
+      <span id="member-count"></span>
+    </div>
+    <div id="member-list"></div>
+  </div>
+</div>
+
+<script>
+const DM_DAYS = [1, 4, 7, 10, 13, 16, 19, 22, 25, 28];
+
+const DMS = [
+  {
+    lesson: 1,
+    day: 1,
+    title: "The Foundation",
+    text: "Welcome to your first week. Before your first workout, I want to give you the framework that makes the next four weeks actually work. Most programs skip this entirely. Read it tonight.\n👉 https://4-weeks.kaloscoach.app/#lesson-1"
+  },
+  {
+    lesson: 2,
+    day: 4,
+    title: "Train Like a Pro",
+    text: "Two people can do the exact same program and get completely different results. The difference comes down to how they train. Today's lesson covers the seven principles and the rep concept that changes how you approach every set.\n👉 https://4-weeks.kaloscoach.app/#lesson-2"
+  },
+  {
+    lesson: 3,
+    day: 7,
+    title: "Elevate Your Execution",
+    text: "One week in. Now we go deeper: your exact protein target, how to hit it every day, and the five daily habits that quietly drive everything else. A lot of value packed into this one.\n👉 https://4-weeks.kaloscoach.app/#lesson-3"
+  },
+  {
+    lesson: 4,
+    day: 10,
+    title: "The Hidden 20%",
+    text: "Perfect training and perfect nutrition still leave you 20% short if you ignore what happens between sessions. Sleep, hydration, steps, sunlight, stress: this lesson is about the variables most programs never address.\n👉 https://4-weeks.kaloscoach.app/#lesson-4"
+  },
+  {
+    lesson: 5,
+    day: 13,
+    title: "The Magic of Movement",
+    text: "You train about 3 hours a week. Here is what is happening in the other 165, and why it shapes a bigger portion of your results than most people realize. This one is worth reading twice.\n👉 https://4-weeks.kaloscoach.app/#lesson-5"
+  },
+  {
+    lesson: 6,
+    day: 16,
+    title: "The Nutrition System",
+    text: "Every popular diet works through the same mechanism. Once you understand the system underneath all of them, you stop following rules and start making real decisions. This is the framework.\n👉 https://4-weeks.kaloscoach.app/#lesson-6"
+  },
+  {
+    lesson: 7,
+    day: 19,
+    title: "When Motivation Disappears",
+    text: "Motivation brought you here. By now it has probably faded a bit, and that is completely normal. This lesson is about what carries you through when motivation does not show up.\n👉 https://4-weeks.kaloscoach.app/#lesson-7"
+  },
+  {
+    lesson: 8,
+    day: 22,
+    title: "Build Your Stack",
+    text: "The supplement industry is built on confusion. Here is exactly what is worth taking, what it actually does, and how to time it. No fluff, no marketing.\n👉 https://4-weeks.kaloscoach.app/#lesson-8"
+  },
+  {
+    lesson: 9,
+    day: 25,
+    title: "Full Execution Mode",
+    text: "Three and a half weeks in. Week 4 is where everything you have built starts compounding, if you push it instead of coast. Here is how to make the last week count.\n👉 https://4-weeks.kaloscoach.app/#lesson-9"
+  },
+  {
+    lesson: 10,
+    day: 28,
+    title: "The Long Game",
+    text: "Four weeks ago you started something most people never start. You showed up when it was hard and followed through when it would have been easy not to. Here is what you built, and what comes next.\n👉 https://4-weeks.kaloscoach.app/#lesson-10"
+  }
+];
+
+function loadMembers() {
+  return JSON.parse(localStorage.getItem('kalos-drip-members') || '[]');
+}
+
+function saveMembers(members) {
+  localStorage.setItem('kalos-drip-members', JSON.stringify(members));
+}
+
+function uid() {
+  return Math.random().toString(36).slice(2) + Date.now().toString(36);
+}
+
+function toDateStr(date) {
+  return date.toISOString().split('T')[0];
+}
+
+function today() {
+  return toDateStr(new Date());
+}
+
+function addDays(dateStr, days) {
+  const d = new Date(dateStr + 'T00:00:00');
+  d.setDate(d.getDate() + days);
+  return toDateStr(d);
+}
+
+function getDueMessages(member) {
+  const t = today();
+  return DMS.filter(dm => {
+    const dueDate = addDays(member.startDate, dm.day - 1);
+    const sent = (member.sent || []).includes(dm.lesson);
+    return dueDate <= t && !sent;
+  });
+}
+
+function getProgress(member) {
+  const sent = (member.sent || []).length;
+  return { sent, total: DMS.length };
+}
+
+function getDueDate(member, dm) {
+  return addDays(member.startDate, dm.day - 1);
+}
+
+function isOverdue(member, dm) {
+  return getDueDate(member, dm) < today();
+}
+
+function addMember() {
+  const name = document.getElementById('inp-name').value.trim();
+  const date = document.getElementById('inp-date').value;
+  if (!name || !date) { alert('Please enter a name and start date.'); return; }
+  const members = loadMembers();
+  members.push({ id: uid(), name, startDate: date, sent: [] });
+  saveMembers(members);
+  document.getElementById('inp-name').value = '';
+  document.getElementById('inp-date').value = '';
+  render();
+}
+
+function removeMember(id) {
+  if (!confirm('Remove this member from the tracker?')) return;
+  const members = loadMembers().filter(m => m.id !== id);
+  saveMembers(members);
+  render();
+}
+
+function markSent(memberId, lesson) {
+  const members = loadMembers();
+  const m = members.find(m => m.id === memberId);
+  if (m) {
+    m.sent = m.sent || [];
+    if (!m.sent.includes(lesson)) m.sent.push(lesson);
+  }
+  saveMembers(members);
+  render();
+}
+
+async function copyText(text, btn) {
+  try {
+    await navigator.clipboard.writeText(text);
+  } catch(e) {
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    ta.style.cssText = 'position:fixed;top:0;left:0;opacity:0;pointer-events:none;';
+    document.body.appendChild(ta);
+    ta.focus();
+    ta.select();
+    try { document.execCommand('copy'); } catch(e2) {}
+    document.body.removeChild(ta);
+  }
+  btn.textContent = 'Copied!';
+  btn.classList.add('copied');
+  setTimeout(() => {
+    btn.textContent = 'Copy Message';
+    btn.classList.remove('copied');
+  }, 2000);
+}
+
+function formatDate(dateStr) {
+  const d = new Date(dateStr + 'T00:00:00');
+  return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+}
+
+function render() {
+  const members = loadMembers();
+  const t = today();
+
+  // Today label
+  const todayLabel = new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' });
+  document.getElementById('today-label').textContent = todayLabel;
+
+  // Member count
+  document.getElementById('member-count').textContent = members.length + ' member' + (members.length !== 1 ? 's' : '');
+
+  // Build queue
+  const queueItems = [];
+  members.forEach(member => {
+    const due = getDueMessages(member);
+    due.forEach(dm => {
+      queueItems.push({ member, dm, overdue: isOverdue(member, dm) });
+    });
+  });
+
+  const queueEl = document.getElementById('queue');
+  if (queueItems.length === 0) {
+    queueEl.innerHTML = '<div class="queue-empty">No messages due today. Check back tomorrow.</div>';
+  } else {
+    queueEl.innerHTML = queueItems.map(({ member, dm, overdue }) => {
+      const dueDateStr = formatDate(getDueDate(member, dm));
+      return `
+        <div class="queue-card urgent">
+          <div class="queue-top">
+            <div class="queue-member">${member.name}</div>
+            <div class="queue-meta">
+              ${overdue ? `<span class="badge badge-overdue">Overdue: ${dueDateStr}</span>` : ''}
+              <span class="badge badge-lesson">Lesson ${dm.lesson}</span>
+              <span class="badge badge-day">Day ${dm.day}</span>
+            </div>
+          </div>
+          <div class="queue-title">${dm.title}</div>
+          <div class="queue-msg">${dm.text}</div>
+          <div class="queue-actions">
+            <button class="btn btn-copy" onclick="copyText(${JSON.stringify(dm.text)}, this)">Copy Message</button>
+            <button class="btn btn-sent" onclick="markSent('${member.id}', ${dm.lesson})">Mark as Sent</button>
+          </div>
+        </div>`;
+    }).join('');
+  }
+
+  // Member list
+  const listEl = document.getElementById('member-list');
+  if (members.length === 0) {
+    listEl.innerHTML = '<div class="queue-empty">No members yet. Add one above.</div>';
+  } else {
+    listEl.innerHTML = members.map(member => {
+      const { sent, total } = getProgress(member);
+      const pct = Math.round((sent / total) * 100);
+      const dueCount = getDueMessages(member).length;
+      return `
+        <div class="member-row">
+          <div>
+            <div class="member-name">${member.name}</div>
+            <div class="member-start">Started ${formatDate(member.startDate)}${dueCount > 0 ? ` &nbsp;·&nbsp; <strong style="color:var(--primary)">${dueCount} due today</strong>` : ''}</div>
+          </div>
+          <div class="progress-bar"><div class="progress-fill" style="width:${pct}%"></div></div>
+          <div class="progress-label">${sent}/${total}</div>
+          <button class="btn-remove" onclick="removeMember('${member.id}')" title="Remove member">×</button>
+        </div>`;
+    }).join('');
+  }
+}
+
+// Set today's date as default
+document.getElementById('inp-date').value = today();
+render();
+</script>
+</body>
+</html>
