@@ -45,7 +45,17 @@ body{
 }
 .logo{font-size:15px;font-weight:800;letter-spacing:0.14em;text-transform:uppercase;color:var(--dark);}
 .logo-dot{color:var(--primary);}
+.hdr-right{display:flex;align-items:center;gap:12px;}
 .hdr-pill{font-size:11px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--primary);background:var(--primary-dim2);border:1px solid var(--primary-light);border-radius:100px;padding:4px 14px;}
+.sync-dot{font-size:11px;font-weight:600;display:flex;align-items:center;gap:5px;color:var(--text-muted);}
+.sync-dot::before{content:'';width:7px;height:7px;border-radius:50%;background:var(--border-dark);}
+.sync-dot.syncing::before{background:var(--warn);animation:pulse 1s infinite;}
+.sync-dot.synced{color:var(--success);}
+.sync-dot.synced::before{background:var(--success);}
+.sync-dot.error{color:#dc2626;}
+.sync-dot.error::before{background:#dc2626;}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:.4;}}
+
 .wrap{max-width:860px;margin:0 auto;padding:48px 32px 100px;}
 .page-title{font-size:36px;font-weight:800;letter-spacing:-0.03em;color:var(--dark);margin-bottom:6px;}
 .page-sub{font-size:15px;color:var(--text-sec);margin-bottom:40px;}
@@ -62,6 +72,7 @@ body{
 .btn{height:40px;padding:0 20px;border-radius:var(--radius);font-size:13px;font-weight:700;cursor:pointer;border:none;transition:all .15s;white-space:nowrap;}
 .btn-primary{background:var(--primary);color:#fff;}
 .btn-primary:hover{background:var(--primary-dark);}
+.btn-primary:disabled{opacity:.5;cursor:not-allowed;}
 .btn-ghost{background:transparent;color:var(--text-sec);border:1px solid var(--border-dark);}
 .btn-ghost:hover{border-color:var(--primary);color:var(--primary);}
 
@@ -84,6 +95,7 @@ body{
 .btn-copy.copied{background:var(--success-bg);color:var(--success);border-color:var(--success-border);}
 .btn-sent{background:var(--success-bg);color:var(--success);border:1px solid var(--success-border);font-size:12px;height:34px;padding:0 16px;}
 .btn-sent:hover{background:var(--success);color:#fff;}
+.btn-sent:disabled{opacity:.5;cursor:not-allowed;}
 
 /* Member list */
 .member-row{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:18px 20px;margin-bottom:8px;display:flex;align-items:center;gap:16px;box-shadow:var(--shadow);}
@@ -95,11 +107,11 @@ body{
 .btn-remove{background:none;border:none;cursor:pointer;color:var(--text-muted);font-size:18px;line-height:1;padding:4px;border-radius:var(--radius);transition:color .15s;}
 .btn-remove:hover{color:#dc2626;}
 
+/* Loader */
+.loader{text-align:center;padding:40px;color:var(--text-muted);font-size:14px;}
+
 /* Today header */
-.today-hd{display:flex;align-items:center;gap:10px;margin-bottom:20px;}
 .today-date{font-size:13px;font-weight:600;color:var(--text-muted);}
-.today-count{font-size:12px;font-weight:700;background:var(--primary);color:#fff;border-radius:100px;padding:2px 10px;}
-.today-count.zero{background:var(--border-dark);color:var(--text-muted);}
 
 @media(max-width:600px){
   .hdr{padding:0 16px;}
@@ -112,7 +124,10 @@ body{
 <body>
 <header class="hdr">
   <span class="logo">KALOS<span class="logo-dot">.</span></span>
-  <span class="hdr-pill">Drip Tracker</span>
+  <div class="hdr-right">
+    <span id="sync-indicator" class="sync-dot">Loading</span>
+    <span class="hdr-pill">Drip Tracker</span>
+  </div>
 </header>
 
 <div class="wrap">
@@ -131,7 +146,7 @@ body{
         <label>Program Start Date (Day 1)</label>
         <input type="date" id="inp-date" />
       </div>
-      <button class="btn btn-primary" onclick="addMember()">Add to Tracker</button>
+      <button class="btn btn-primary" id="btn-add" onclick="addMember()">Add to Tracker</button>
     </div>
   </div>
 
@@ -141,7 +156,7 @@ body{
       Today's Queue
       <span id="today-label" class="today-date"></span>
     </div>
-    <div id="queue"></div>
+    <div id="queue"><div class="loader">Loading...</div></div>
   </div>
 
   <!-- All Members -->
@@ -150,161 +165,168 @@ body{
       Active Members
       <span id="member-count"></span>
     </div>
-    <div id="member-list"></div>
+    <div id="member-list"><div class="loader">Loading...</div></div>
     <div style="margin-top:16px;display:flex;gap:8px;flex-wrap:wrap;">
-      <button class="btn btn-ghost" onclick="exportMembers()">Export Members</button>
+      <button class="btn btn-ghost" onclick="exportMembers()">Export Backup</button>
       <label class="btn btn-ghost" style="cursor:pointer;">
-        Import Members
+        Import Backup
         <input type="file" accept=".json" onchange="importMembers(event)" style="display:none;" />
       </label>
+      <button class="btn btn-ghost" onclick="refreshAll()" title="Reload from Supabase">Refresh</button>
     </div>
   </div>
 </div>
 
 <script>
-const DM_DAYS = [1, 4, 7, 10, 13, 16, 19, 22, 25, 28];
+// ── Supabase config ────────────────────────────────────────────────────────
+const SB_URL = 'https://znxvxtdipuuvmfnyxiib.supabase.co';
+const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpueHZ4dGRpcHV1dm1mbnl4aWliIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEwMDc2ODQsImV4cCI6MjA5NjU4MzY4NH0.l1x0V7W5LHiHK9FjbW9FWaQJI7tUHwshPWDr7Mv9GGc';
+const BASE = SB_URL + '/rest/v1/members';
 
-const DMS = [
-  {
-    lesson: 1,
-    day: 1,
-    title: "The Foundation",
-    text: "Welcome to your first week. Before your first workout, I want to give you the framework that makes the next four weeks actually work. Most programs skip this entirely. Read it tonight.\n👉 https://4-weeks.kaloscoach.app/#lesson-1"
-  },
-  {
-    lesson: 2,
-    day: 4,
-    title: "Train Like a Pro",
-    text: "Two people can do the exact same program and get completely different results. The difference comes down to how they train. Today's lesson covers the seven principles and the rep concept that changes how you approach every set.\n👉 https://4-weeks.kaloscoach.app/#lesson-2"
-  },
-  {
-    lesson: 3,
-    day: 7,
-    title: "Elevate Your Execution",
-    text: "One week in. Now we go deeper: your exact protein target, how to hit it every day, and the five daily habits that quietly drive everything else. A lot of value packed into this one.\n👉 https://4-weeks.kaloscoach.app/#lesson-3"
-  },
-  {
-    lesson: 4,
-    day: 10,
-    title: "The Hidden 20%",
-    text: "Perfect training and perfect nutrition still leave you 20% short if you ignore what happens between sessions. Sleep, hydration, steps, sunlight, stress: this lesson is about the variables most programs never address.\n👉 https://4-weeks.kaloscoach.app/#lesson-4"
-  },
-  {
-    lesson: 5,
-    day: 13,
-    title: "The Magic of Movement",
-    text: "You train about 3 hours a week. Here is what is happening in the other 165, and why it shapes a bigger portion of your results than most people realize. This one is worth reading twice.\n👉 https://4-weeks.kaloscoach.app/#lesson-5"
-  },
-  {
-    lesson: 6,
-    day: 16,
-    title: "The Nutrition System",
-    text: "Every popular diet works through the same mechanism. Once you understand the system underneath all of them, you stop following rules and start making real decisions. This is the framework.\n👉 https://4-weeks.kaloscoach.app/#lesson-6"
-  },
-  {
-    lesson: 7,
-    day: 19,
-    title: "When Motivation Disappears",
-    text: "Motivation brought you here. By now it has probably faded a bit, and that is completely normal. This lesson is about what carries you through when motivation does not show up.\n👉 https://4-weeks.kaloscoach.app/#lesson-7"
-  },
-  {
-    lesson: 8,
-    day: 22,
-    title: "Build Your Stack",
-    text: "The supplement industry is built on confusion. Here is exactly what is worth taking, what it actually does, and how to time it. No fluff, no marketing.\n👉 https://4-weeks.kaloscoach.app/#lesson-8"
-  },
-  {
-    lesson: 9,
-    day: 25,
-    title: "Full Execution Mode",
-    text: "Three and a half weeks in. Week 4 is where everything you have built starts compounding, if you push it instead of coast. Here is how to make the last week count.\n👉 https://4-weeks.kaloscoach.app/#lesson-9"
-  },
-  {
-    lesson: 10,
-    day: 28,
-    title: "The Long Game",
-    text: "Four weeks ago you started something most people never start. You showed up when it was hard and followed through when it would have been easy not to. Here is what you built, and what comes next.\n👉 https://4-weeks.kaloscoach.app/#lesson-10"
+function sbHeaders(extra = {}) {
+  return {
+    'apikey': SB_KEY,
+    'Authorization': 'Bearer ' + SB_KEY,
+    'Content-Type': 'application/json',
+    ...extra
+  };
+}
+
+// ── In-memory cache ────────────────────────────────────────────────────────
+let members = [];
+
+// Row shape from Supabase uses snake_case; JS uses camelCase internally
+function fromDb(row) {
+  return { id: row.id, name: row.name, startDate: row.start_date, sent: row.sent || [] };
+}
+
+function toDb(m) {
+  return { id: m.id, name: m.name, start_date: m.startDate, sent: m.sent || [] };
+}
+
+// ── Sync indicator ─────────────────────────────────────────────────────────
+function setStatus(state, label) {
+  const el = document.getElementById('sync-indicator');
+  el.className = 'sync-dot ' + state;
+  const labels = { syncing: 'Saving', synced: 'Synced', error: 'Error', loading: 'Loading' };
+  el.textContent = label || labels[state] || state;
+}
+
+// ── Supabase API layer ─────────────────────────────────────────────────────
+async function fetchAllMembers() {
+  setStatus('loading');
+  try {
+    const res = await fetch(BASE + '?select=*&order=created_at.asc', { headers: sbHeaders() });
+    if (!res.ok) throw new Error(await res.text());
+    const rows = await res.json();
+    members = rows.map(fromDb);
+    setStatus('synced');
+  } catch(e) {
+    setStatus('error', 'Error');
+    console.error('Fetch error:', e);
   }
+}
+
+async function insertMember(m) {
+  setStatus('syncing');
+  try {
+    const res = await fetch(BASE, {
+      method: 'POST',
+      headers: sbHeaders({ 'Prefer': 'return=minimal' }),
+      body: JSON.stringify(toDb(m))
+    });
+    if (!res.ok) throw new Error(await res.text());
+    setStatus('synced');
+    return true;
+  } catch(e) {
+    setStatus('error', 'Error');
+    console.error('Insert error:', e);
+    return false;
+  }
+}
+
+async function patchSent(id, sent) {
+  setStatus('syncing');
+  try {
+    const res = await fetch(BASE + '?id=eq.' + encodeURIComponent(id), {
+      method: 'PATCH',
+      headers: sbHeaders({ 'Prefer': 'return=minimal' }),
+      body: JSON.stringify({ sent })
+    });
+    if (!res.ok) throw new Error(await res.text());
+    setStatus('synced');
+    return true;
+  } catch(e) {
+    setStatus('error', 'Error');
+    console.error('Patch error:', e);
+    return false;
+  }
+}
+
+async function deleteMemberDb(id) {
+  setStatus('syncing');
+  try {
+    const res = await fetch(BASE + '?id=eq.' + encodeURIComponent(id), {
+      method: 'DELETE',
+      headers: sbHeaders()
+    });
+    if (!res.ok) throw new Error(await res.text());
+    setStatus('synced');
+    return true;
+  } catch(e) {
+    setStatus('error', 'Error');
+    console.error('Delete error:', e);
+    return false;
+  }
+}
+
+// ── DM data ────────────────────────────────────────────────────────────────
+const DMS = [
+  { lesson: 1,  day: 1,  title: "The Foundation",
+    text: "Welcome to your first week. Before your first workout, I want to give you the framework that makes the next four weeks actually work. Most programs skip this entirely. Read it tonight.\n👉 https://4-weeks.kaloscoach.app/#lesson-1" },
+  { lesson: 2,  day: 4,  title: "Train Like a Pro",
+    text: "Two people can do the exact same program and get completely different results. The difference comes down to how they train. Today's lesson covers the seven principles and the rep concept that changes how you approach every set.\n👉 https://4-weeks.kaloscoach.app/#lesson-2" },
+  { lesson: 3,  day: 7,  title: "Elevate Your Execution",
+    text: "One week in. Now we go deeper: your exact protein target, how to hit it every day, and the five daily habits that quietly drive everything else. A lot of value packed into this one.\n👉 https://4-weeks.kaloscoach.app/#lesson-3" },
+  { lesson: 4,  day: 10, title: "The Hidden 20%",
+    text: "Perfect training and perfect nutrition still leave you 20% short if you ignore what happens between sessions. Sleep, hydration, steps, sunlight, stress: this lesson is about the variables most programs never address.\n👉 https://4-weeks.kaloscoach.app/#lesson-4" },
+  { lesson: 5,  day: 13, title: "The Magic of Movement",
+    text: "You train about 3 hours a week. Here is what is happening in the other 165, and why it shapes a bigger portion of your results than most people realize. This one is worth reading twice.\n👉 https://4-weeks.kaloscoach.app/#lesson-5" },
+  { lesson: 6,  day: 16, title: "The Nutrition System",
+    text: "Every popular diet works through the same mechanism. Once you understand the system underneath all of them, you stop following rules and start making real decisions. This is the framework.\n👉 https://4-weeks.kaloscoach.app/#lesson-6" },
+  { lesson: 7,  day: 19, title: "When Motivation Disappears",
+    text: "Motivation brought you here. By now it has probably faded a bit, and that is completely normal. This lesson is about what carries you through when motivation does not show up.\n👉 https://4-weeks.kaloscoach.app/#lesson-7" },
+  { lesson: 8,  day: 22, title: "Build Your Stack",
+    text: "The supplement industry is built on confusion. Here is exactly what is worth taking, what it actually does, and how to time it. No fluff, no marketing.\n👉 https://4-weeks.kaloscoach.app/#lesson-8" },
+  { lesson: 9,  day: 25, title: "Full Execution Mode",
+    text: "Three and a half weeks in. Week 4 is where everything you have built starts compounding, if you push it instead of coast. Here is how to make the last week count.\n👉 https://4-weeks.kaloscoach.app/#lesson-9" },
+  { lesson: 10, day: 28, title: "The Long Game",
+    text: "Four weeks ago you started something most people never start. You showed up when it was hard and followed through when it would have been easy not to. Here is what you built, and what comes next.\n👉 https://4-weeks.kaloscoach.app/#lesson-10" }
 ];
 
-function loadMembers() {
-  return JSON.parse(localStorage.getItem('kalos-drip-members') || '[]');
-}
-
-function saveMembers(members) {
-  localStorage.setItem('kalos-drip-members', JSON.stringify(members));
-}
-
-function uid() {
-  return Math.random().toString(36).slice(2) + Date.now().toString(36);
-}
-
-function toDateStr(date) {
-  return date.toISOString().split('T')[0];
-}
-
-function today() {
-  return toDateStr(new Date());
-}
-
+// ── Helpers ────────────────────────────────────────────────────────────────
+function uid() { return Math.random().toString(36).slice(2) + Date.now().toString(36); }
+function toDateStr(date) { return date.toISOString().split('T')[0]; }
+function today() { return toDateStr(new Date()); }
 function addDays(dateStr, days) {
   const d = new Date(dateStr + 'T00:00:00');
   d.setDate(d.getDate() + days);
   return toDateStr(d);
 }
-
+function formatDate(dateStr) {
+  return new Date(dateStr + 'T00:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+}
+function getDueDate(member, dm) { return addDays(member.startDate, dm.day - 1); }
+function isOverdue(member, dm) { return getDueDate(member, dm) < today(); }
 function getDueMessages(member) {
   const t = today();
-  return DMS.filter(dm => {
-    const dueDate = addDays(member.startDate, dm.day - 1);
-    const sent = (member.sent || []).includes(dm.lesson);
-    return dueDate <= t && !sent;
-  });
+  return DMS.filter(dm => getDueDate(member, dm) <= t && !(member.sent || []).includes(dm.lesson));
 }
-
 function getProgress(member) {
-  const sent = (member.sent || []).length;
-  return { sent, total: DMS.length };
+  return { sent: (member.sent || []).length, total: DMS.length };
 }
 
-function getDueDate(member, dm) {
-  return addDays(member.startDate, dm.day - 1);
-}
-
-function isOverdue(member, dm) {
-  return getDueDate(member, dm) < today();
-}
-
-function addMember() {
-  const name = document.getElementById('inp-name').value.trim();
-  const date = document.getElementById('inp-date').value;
-  if (!name || !date) { alert('Please enter a name and start date.'); return; }
-  const members = loadMembers();
-  members.push({ id: uid(), name, startDate: date, sent: [] });
-  saveMembers(members);
-  document.getElementById('inp-name').value = '';
-  document.getElementById('inp-date').value = '';
-  render();
-}
-
-function removeMember(id) {
-  if (!confirm('Remove this member from the tracker?')) return;
-  const members = loadMembers().filter(m => m.id !== id);
-  saveMembers(members);
-  render();
-}
-
-function markSent(memberId, lesson) {
-  const members = loadMembers();
-  const m = members.find(m => m.id === memberId);
-  if (m) {
-    m.sent = m.sent || [];
-    if (!m.sent.includes(lesson)) m.sent.push(lesson);
-  }
-  saveMembers(members);
-  render();
-}
-
+// ── Copy to clipboard ──────────────────────────────────────────────────────
 async function copyText(text, btn) {
   try {
     await navigator.clipboard.writeText(text);
@@ -320,33 +342,110 @@ async function copyText(text, btn) {
   }
   btn.textContent = 'Copied!';
   btn.classList.add('copied');
-  setTimeout(() => {
-    btn.textContent = 'Copy Message';
-    btn.classList.remove('copied');
-  }, 2000);
+  setTimeout(() => { btn.textContent = 'Copy Message'; btn.classList.remove('copied'); }, 2000);
 }
 
-function formatDate(dateStr) {
-  const d = new Date(dateStr + 'T00:00:00');
-  return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+// ── UI actions ─────────────────────────────────────────────────────────────
+async function addMember() {
+  const name = document.getElementById('inp-name').value.trim();
+  const date = document.getElementById('inp-date').value;
+  if (!name || !date) { alert('Please enter a name and start date.'); return; }
+  const btn = document.getElementById('btn-add');
+  btn.disabled = true;
+  const m = { id: uid(), name, startDate: date, sent: [] };
+  members.push(m);
+  render();
+  const ok = await insertMember(m);
+  if (!ok) {
+    members = members.filter(x => x.id !== m.id); // rollback
+    render();
+    alert('Could not save member. Check your connection and try again.');
+  } else {
+    document.getElementById('inp-name').value = '';
+    document.getElementById('inp-date').value = today();
+  }
+  btn.disabled = false;
 }
 
+async function removeMember(id) {
+  if (!confirm('Remove this member from the tracker?')) return;
+  const prev = members.slice();
+  members = members.filter(m => m.id !== id);
+  render();
+  const ok = await deleteMemberDb(id);
+  if (!ok) {
+    members = prev; // rollback
+    render();
+    alert('Could not remove member. Check your connection and try again.');
+  }
+}
+
+async function markSent(memberId, lesson) {
+  const m = members.find(m => m.id === memberId);
+  if (!m || m.sent.includes(lesson)) return;
+  m.sent = [...m.sent, lesson];
+  render();
+  await patchSent(memberId, m.sent);
+}
+
+async function refreshAll() {
+  await fetchAllMembers();
+  render();
+}
+
+// ── Export / Import ────────────────────────────────────────────────────────
+function exportMembers() {
+  if (members.length === 0) { alert('No members to export.'); return; }
+  const blob = new Blob([JSON.stringify(members, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'kalos-drip-members-' + today() + '.json';
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+async function importMembers(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = async function(e) {
+    try {
+      const imported = JSON.parse(e.target.result);
+      if (!Array.isArray(imported)) throw new Error('Invalid format');
+      const existingIds = new Set(members.map(m => m.id));
+      const newMembers = imported.filter(m => !existingIds.has(m.id));
+      if (newMembers.length === 0) { alert('No new members to import.'); return; }
+      // Insert each new member
+      let added = 0;
+      for (const m of newMembers) {
+        const ok = await insertMember(m);
+        if (ok) { members.push(m); added++; }
+      }
+      render();
+      alert(added + ' member(s) imported successfully.');
+    } catch(e) {
+      alert('Could not read file. Make sure it is a valid Kalos export.');
+    }
+    event.target.value = '';
+  };
+  reader.readAsText(file);
+}
+
+// ── Render ─────────────────────────────────────────────────────────────────
 function render() {
-  const members = loadMembers();
   const t = today();
 
-  // Today label
-  const todayLabel = new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' });
-  document.getElementById('today-label').textContent = todayLabel;
+  document.getElementById('today-label').textContent =
+    new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' });
 
-  // Member count
-  document.getElementById('member-count').textContent = members.length + ' member' + (members.length !== 1 ? 's' : '');
+  document.getElementById('member-count').textContent =
+    members.length + ' member' + (members.length !== 1 ? 's' : '');
 
-  // Build queue
+  // Queue
   const queueItems = [];
   members.forEach(member => {
-    const due = getDueMessages(member);
-    due.forEach(dm => {
+    getDueMessages(member).forEach(dm => {
       queueItems.push({ member, dm, overdue: isOverdue(member, dm) });
     });
   });
@@ -371,7 +470,7 @@ function render() {
           <div class="queue-msg">${dm.text}</div>
           <div class="queue-actions">
             <button class="btn btn-copy" onclick="copyText(${JSON.stringify(dm.text)}, this)">Copy Message</button>
-            <button class="btn btn-sent" onclick="markSent('${member.id}', ${dm.lesson})">Mark as Sent</button>
+            <button class="btn btn-sent" onclick="markSent('${member.id}', ${dm.lesson})" id="sent-${member.id}-${dm.lesson}">Mark as Sent</button>
           </div>
         </div>`;
     }).join('');
@@ -400,47 +499,13 @@ function render() {
   }
 }
 
-function exportMembers() {
-  const members = loadMembers();
-  if (members.length === 0) { alert('No members to export.'); return; }
-  const blob = new Blob([JSON.stringify(members, null, 2)], { type: 'application/json' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = 'kalos-drip-members-' + today() + '.json';
-  a.click();
-  URL.revokeObjectURL(url);
-}
-
-function importMembers(event) {
-  const file = event.target.files[0];
-  if (!file) return;
-  const reader = new FileReader();
-  reader.onload = function(e) {
-    try {
-      const imported = JSON.parse(e.target.result);
-      if (!Array.isArray(imported)) throw new Error('Invalid format');
-      const existing = loadMembers();
-      const existingIds = new Set(existing.map(m => m.id));
-      const merged = [...existing];
-      let added = 0;
-      imported.forEach(m => {
-        if (!existingIds.has(m.id)) { merged.push(m); added++; }
-      });
-      saveMembers(merged);
-      render();
-      alert(added + ' member(s) imported successfully.');
-    } catch(e) {
-      alert('Could not read file. Make sure it is a valid Kalos export.');
-    }
-    event.target.value = '';
-  };
-  reader.readAsText(file);
-}
-
-// Set today's date as default
+// ── Init ───────────────────────────────────────────────────────────────────
 document.getElementById('inp-date').value = today();
-render();
+
+(async () => {
+  await fetchAllMembers();
+  render();
+})();
 </script>
 </body>
 </html>
