@@ -195,6 +195,9 @@ function sbHeaders(extra = {}) {
 // ── In-memory cache ────────────────────────────────────────────────────────
 let members = [];
 
+// Message text store — avoids embedding raw strings in onclick HTML attributes
+const MSG_STORE = {};
+
 // Row shape from Supabase uses snake_case; JS uses camelCase internally
 function fromDb(row) {
   return { id: row.id, name: row.name, startDate: row.start_date, sent: row.sent || [] };
@@ -456,6 +459,8 @@ function render() {
   } else {
     queueEl.innerHTML = queueItems.map(({ member, dm, overdue }) => {
       const dueDateStr = formatDate(getDueDate(member, dm));
+      const msgKey = member.id + '-' + dm.lesson;
+      MSG_STORE[msgKey] = dm.text;
       return `
         <div class="queue-card urgent">
           <div class="queue-top">
@@ -469,7 +474,7 @@ function render() {
           <div class="queue-title">${dm.title}</div>
           <div class="queue-msg">${dm.text}</div>
           <div class="queue-actions">
-            <button class="btn btn-copy" onclick="copyText(${JSON.stringify(dm.text)}, this)">Copy Message</button>
+            <button class="btn btn-copy" onclick="copyText(MSG_STORE['${msgKey}'], this)">Copy Message</button>
             <button class="btn btn-sent" onclick="markSent('${member.id}', ${dm.lesson})" id="sent-${member.id}-${dm.lesson}">Mark as Sent</button>
           </div>
         </div>`;
